@@ -12,8 +12,8 @@
                 </router-link>
             </div>
             <div class="nav">
-                <router-link to="/">Форма</router-link>
-                <router-link to="preview">Превью</router-link>
+                <router-link class="nav-item" to="/">Форма</router-link>
+                <router-link class="nav-item" to="preview">Превью</router-link>
             </div>
         </header>
 
@@ -45,6 +45,25 @@
 header{
     display: flex;
     padding: 24px 92px;
+    position: relative;
+    border-bottom: 1px solid rgba(17, 17, 17, 0.1);
+}
+
+.logo{
+    position: absolute;
+    left: 92px;
+    top: 24px;
+}
+
+.nav{
+    text-align: center;
+    width: 100%;
+    font-size: 14px;
+    color: rgba(17, 17, 17, 0.48);
+}
+
+.nav-item{
+    margin-right: 10px;
 }
 
 main {
@@ -55,7 +74,7 @@ footer {
     text-align: center;
     padding: 30px;
     background: #FAFAFA;
-    box-shadow: 0px 1px 0px rgba(17, 17, 17, 0.1);
+    box-shadow: 0 1px 0 rgba(17, 17, 17, 0.1);
 }
 
 </style>
