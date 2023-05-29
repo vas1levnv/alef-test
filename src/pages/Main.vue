@@ -3,17 +3,27 @@
         <h1 class="main-form-title">Персональные данные</h1>
 
         <label class="main-form-label" for="name">
+            <div v-show="!isErrorName" style="color: red">Введите имя</div>
             <div class="main-form-label-text">Имя</div>
-            <input v-model="name" id="name" type="text" placeholder="Петр">
+            <input @blur="errorNameBlur"
+                   @focus="isErrorName = true"
+                   v-model="name" id="name"
+                   type="text" placeholder="Петр">
         </label>
 
         <label class="main-form-label" for="name">
+            <div v-show="!isErrorAge" style="color: red">Введите возраст</div>
             <div class="main-form-label-text">Возраст</div>
-            <input v-model="age" id="age" type="number" placeholder="99">
+            <input v-model="age" id="age"
+                   @blur="errorAgeBlur"
+                   @focus="isErrorAge = true"
+                   min="1"
+                   max="99"
+                   type="number" placeholder="99">
         </label>
 
         <div v-show="children.length < 5">
-            <button @click="addChild">+ Добавить ребенка</button>
+            <button :disabled="disabledAddChild" @click="addChild">+ Добавить ребенка</button>
         </div>
         <div>
             Дети (макс. 5)
@@ -39,7 +49,8 @@ export default {
         return {
             name: null,
             age: null,
-
+            isErrorName:true,
+            isErrorAge:true,
             childInc: 0,
             children: [],
         }
@@ -55,6 +66,18 @@ export default {
         saveForm() {
             console.log(this.name, this.age)
         },
+
+        errorNameBlur(){
+            this.name ? this.isErrorName = true : this.isErrorName = false
+        },
+        errorAgeBlur(){
+            this.age ? this.isErrorAge = true : this.isErrorAge = false
+        },
+    },
+    computed:{
+        disabledAddChild: function (){
+            return !(this.isErrorAge && this.isErrorName);
+        }
     }
 }
 </script>

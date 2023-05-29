@@ -15,6 +15,8 @@
             <input
                 @blur="errorAgeBlur"
                 @focus="isErrorAge = false"
+                min="1"
+                max="17"
                 v-model="childAge" id="childAge" type="number" placeholder="99">
         </label>
         <button @click="$emit('remove', child.id)">Удалить</button>
