@@ -21,21 +21,22 @@
                    max="99"
                    type="number" placeholder="99">
         </label>
-
         <div v-show="children.length < 5">
             <button :disabled="disabledAddChild" @click="addChild">+ Добавить ребенка</button>
         </div>
         <div>
             Дети (макс. 5)
         </div>
-        <InputChild v-for="child in children"
+        <InputChild v-show="!disabledAddChild" v-for="child in children"
                     @remove="removeChild"
+                    v-bind:currentChild="currentChild"
+                    v-bind:isDisabledBtnAddChild="isDisabledBtnAddChild"
                     :key="child.id" v-bind:child="child"
         />
         <button @click="saveForm">
             Сохранить
         </button>
-
+        <button @click="console.log(children)">children</button>
     </form>
 </template>
 
@@ -49,16 +50,33 @@ export default {
         return {
             name: null,
             age: null,
-            isErrorName:true,
-            isErrorAge:true,
+            isErrorName: true,
+            isErrorAge: true,
             childInc: 0,
             children: [],
+            currentChild: {},
+            isDisabledBtnAddChild: true,
         }
     },
     methods: {
         addChild() {
+          /*  if (Object.keys(this.currentChild).length !== false) {
+                this.isDisabledBtnAddChild = false
+            }*/
+
             this.childInc += 1
-            this.children.push({id: this.childInc})
+            /*this.children.push({
+                id: this.childInc,
+                name: this.currentChild.name,
+                age: this.currentChild.age
+            })*/
+
+            this.children = [...this.children, {
+                id: this.childInc,
+                name: this.currentChild.name,
+                age: this.currentChild.age
+            }]
+
         },
         removeChild(id) {
             this.children = this.children.filter(c => c.id !== id)
@@ -67,16 +85,20 @@ export default {
             console.log(this.name, this.age)
         },
 
-        errorNameBlur(){
+        errorNameBlur() {
             this.name ? this.isErrorName = true : this.isErrorName = false
         },
-        errorAgeBlur(){
+        errorAgeBlur() {
             this.age ? this.isErrorAge = true : this.isErrorAge = false
         },
+
+
     },
-    computed:{
-        disabledAddChild: function (){
-            return !(this.isErrorAge && this.isErrorName);
+    computed: {
+        disabledAddChild: function () {
+            if (this.name === null || this.age === null || this.isDisabledBtnAddChild !== true) {
+                return true
+            }
         }
     }
 }

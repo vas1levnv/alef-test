@@ -1,6 +1,6 @@
 <template>
     <div :id="child.id">
-        <label  class="main-form-label" for="childName">
+        <label class="main-form-label" for="childName">
             <div v-show="isErrorName" style="color: red">Введите имя</div>
             <div class="main-form-label-text">Имя</div>
             <input @blur="errorNameBlur"
@@ -13,11 +13,11 @@
             <div v-show="isErrorAge" style="color: red">Введите возраст</div>
             <div class="main-form-label-text">Возраст</div>
             <input
-                @blur="errorAgeBlur"
-                @focus="isErrorAge = false"
-                min="1"
-                max="17"
-                v-model="childAge" id="childAge" type="number" placeholder="99">
+                    @blur="errorAgeBlur"
+                    @focus="isErrorAge = false"
+                    min="1"
+                    max="17"
+                    v-model="childAge" id="childAge" type="number" placeholder="99">
         </label>
         <button @click="$emit('remove', child.id)">Удалить</button>
     </div>
@@ -25,7 +25,7 @@
 
 <script>
 export default {
-    props:['child'],
+    props: ['child', 'currentChild'],
     name: "InputChild",
     data() {
         return {
@@ -35,14 +35,23 @@ export default {
             isErrorAge: false,
         }
     },
-    methods:{
-        errorNameBlur(){
+    methods: {
+        errorNameBlur() {
             !this.childName ? this.isErrorName = true : false
+            if (this.childName !== null) {
+                this.currentChild.name = this.childName
+                this.isDisabledBtnAddChild = true
+            }
         },
-        errorAgeBlur(){
+        errorAgeBlur() {
+            this.isDisabledBtnAddChild = false
             !this.childAge ? this.isErrorAge = true : false
+            if (this.childAge !== null) {
+                this.currentChild.age = this.childAge
+                this.isDisabledBtnAddChild = true
+            }
         },
-    }
+    },
 }
 </script>
 
