@@ -1,57 +1,57 @@
 <template>
-    <div :id="child.id">
-        <label class="main-form-label" for="childName">
-            <div v-show="isErrorName" style="color: red">Введите имя</div>
-            <div class="main-form-label-text">Имя</div>
-            <input @blur="errorNameBlur"
-                   @focus="isErrorName = false"
-                   v-model="childName"
-                   id="childName" type="text" placeholder="Петр">
-        </label>
-
-        <label class="main-form-label" for="childAge">
-            <div v-show="isErrorAge" style="color: red">Введите возраст</div>
-            <div class="main-form-label-text">Возраст</div>
-            <input
-                    @blur="errorAgeBlur"
-                    @focus="isErrorAge = false"
-                    min="1"
-                    max="17"
-                    v-model="childAge" id="childAge" type="number" placeholder="99">
-        </label>
-        <button @click="$emit('remove', child.id)">Удалить</button>
+  <div>
+    <label for="name">
+      <span v-show="isErrorName" style="color: red">Введите имя</span>
+      <span>Имя</span>
+      <input
+          @blur="blurNameInput"
+          @focus="isErrorName = false"
+          v-model="name"
+          id="name" type="text">
+    </label>
+    <label for="age">
+      <span v-show="isErrorAge" style="color: red">Введите возраст</span>
+      <span>Возраст</span>
+      <input
+          @blur="blurAgeInput"
+          @focus="isErrorAge = false"
+          v-model="age"
+          id="age" type="number">
+    </label>
+    <div>
+      <button @click="$emit('remove', child.id)">Удалить</button>
     </div>
+  </div>
 </template>
 
 <script>
 export default {
-    props: ['child', 'currentChild'],
-    name: "InputChild",
-    data() {
-        return {
-            childName: null,
-            childAge: null,
-            isErrorName: false,
-            isErrorAge: false,
-        }
+  props: ['child','currentChild'],
+  name: "InputChild",
+  data() {
+    return {
+      name: null,
+      age: null,
+      isErrorName: false,
+      isErrorAge: false,
+    }
+  },
+  methods: {
+    blurNameInput() {
+      if (this.name === null) {
+        this.isErrorName = true
+      } else {
+        this.currentChild.name = this.name
+      }
     },
-    methods: {
-        errorNameBlur() {
-            !this.childName ? this.isErrorName = true : false
-            if (this.childName !== null) {
-                this.currentChild.name = this.childName
-                this.isDisabledBtnAddChild = true
-            }
-        },
-        errorAgeBlur() {
-            this.isDisabledBtnAddChild = false
-            !this.childAge ? this.isErrorAge = true : false
-            if (this.childAge !== null) {
-                this.currentChild.age = this.childAge
-                this.isDisabledBtnAddChild = true
-            }
-        },
+    blurAgeInput() {
+      if (this.age === null) {
+        this.isErrorAge = true
+      }else {
+        this.currentChild.age = this.age
+      }
     },
+  },
 }
 </script>
 

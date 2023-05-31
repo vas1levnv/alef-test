@@ -1,140 +1,147 @@
 <template>
-    <form @submit.prevent class="main-form">
-        <h1 class="main-form-title">Персональные данные</h1>
-
-        <label class="main-form-label" for="name">
-            <div v-show="!isErrorName" style="color: red">Введите имя</div>
-            <div class="main-form-label-text">Имя</div>
-            <input @blur="errorNameBlur"
-                   @focus="isErrorName = true"
-                   v-model="name" id="name"
-                   type="text" placeholder="Петр">
+  <form @submit.prevent class="main-form">
+    <label for="name">
+      <span v-show="isErrorName" style="color: red">Введите имя</span>
+      <span>Имя</span>
+      <input
+          @blur="blurNameInput"
+          @focus="isErrorName = false"
+          v-model="name"
+          id="name" type="text">
+    </label>
+    <label for="age">
+      <span v-show="isErrorAge" style="color: red">Введите возраст</span>
+      <span>Возраст</span>
+      <input
+          @blur="blurAgeInput"
+          @focus="isErrorAge = false"
+          v-model="age"
+          id="age" type="number">
+    </label>
+    <div>
+      <button
+          @click="addChild"
+          v-show="children.length < 6"
+          :disabled="checkIsEmptyInputs">Добавить ребенка
+      </button>
+      <div v-show="children.length > 0 && children.length <6">
+        <label for="nameChild">
+          <span v-show="isErrorNameChild" style="color: red">Введите имя</span>
+          <span>Имя</span>
+          <input
+              @blur="blurNameInputChild"
+              @focus="isErrorNameChild = false"
+              v-model="nameChild"
+              id="nameChild" type="text">
         </label>
-
-        <label class="main-form-label" for="name">
-            <div v-show="!isErrorAge" style="color: red">Введите возраст</div>
-            <div class="main-form-label-text">Возраст</div>
-            <input v-model="age" id="age"
-                   @blur="errorAgeBlur"
-                   @focus="isErrorAge = true"
-                   min="1"
-                   max="99"
-                   type="number" placeholder="99">
+        <label for="ageChild">
+          <span v-show="isErrorAgeChild" style="color: red">Введите возраст</span>
+          <span>Возраст</span>
+          <input
+              @blur="blurAgeInputChild"
+              @focus="isErrorAgeChild = false"
+              v-model="ageChild"
+              id="ageChild" type="number">
         </label>
-        <div v-show="children.length < 5">
-            <button :disabled="disabledAddChild" @click="addChild">+ Добавить ребенка</button>
-        </div>
-        <div>
-            Дети (макс. 5)
-        </div>
-        <InputChild v-show="!disabledAddChild" v-for="child in children"
+      </div>
+    </div>
+    <div v-for="child in children">
+      <div>{{ child.name }}</div>
+      <div>{{ child.age }}</div>
+      <button @click="removeChild(child.id)">Удалить</button>
+    </div>
+    <!--    <InputChild v-for="child in children"
                     @remove="removeChild"
+                    v-bind:child="child"
                     v-bind:currentChild="currentChild"
-                    v-bind:isDisabledBtnAddChild="isDisabledBtnAddChild"
-                    :key="child.id" v-bind:child="child"
-        />
-        <button @click="saveForm">
-            Сохранить
-        </button>
-        <button @click="console.log(children)">children</button>
-    </form>
+                    :key="child"/>-->
+    <button @click="console.log(children)">children</button>
+  </form>
 </template>
 
 <script>
+
 import InputChild from "@/components/InputChild.vue";
 
 export default {
-    name: "Main",
-    components: {InputChild},
-    data() {
-        return {
-            name: null,
-            age: null,
-            isErrorName: true,
-            isErrorAge: true,
-            childInc: 0,
-            children: [],
-            currentChild: {},
-            isDisabledBtnAddChild: true,
-        }
-    },
-    methods: {
-        addChild() {
-          /*  if (Object.keys(this.currentChild).length !== false) {
-                this.isDisabledBtnAddChild = false
-            }*/
+  name: "Main",
+  components: {InputChild},
 
-            this.childInc += 1
-            /*this.children.push({
-                id: this.childInc,
-                name: this.currentChild.name,
-                age: this.currentChild.age
-            })*/
-
-            this.children = [...this.children, {
-                id: this.childInc,
-                name: this.currentChild.name,
-                age: this.currentChild.age
-            }]
-
-        },
-        removeChild(id) {
-            this.children = this.children.filter(c => c.id !== id)
-        },
-        saveForm() {
-            console.log(this.name, this.age)
-        },
-
-        errorNameBlur() {
-            this.name ? this.isErrorName = true : this.isErrorName = false
-        },
-        errorAgeBlur() {
-            this.age ? this.isErrorAge = true : this.isErrorAge = false
-        },
-
-
-    },
-    computed: {
-        disabledAddChild: function () {
-            if (this.name === null || this.age === null || this.isDisabledBtnAddChild !== true) {
-                return true
-            }
-        }
+  data() {
+    return {
+      name: null,
+      age: null,
+      isErrorName: false,
+      isErrorAge: false,
+      nameChild: null,
+      ageChild: null,
+      isErrorNameChild: false,
+      isErrorAgeChild: false,
+      isShowChildInputs: false,
+      childInc: 0,
+      currentChild: {},
+      children: [],
     }
+  },
+  methods: {
+    blurNameInput() {
+      if (this.name === null) {
+        this.isErrorName = true
+      }
+    },
+    blurAgeInput() {
+      if (this.age === null) {
+        this.isErrorAge = true
+      }
+    },
+
+    blurNameInputChild() {
+      if (this.nameChild === null) {
+        this.isErrorNameChild = true
+      } else {
+        this.currentChild.name = this.nameChild
+      }
+    },
+    blurAgeInputChild() {
+      if (this.ageChild === null) {
+        this.isErrorAgeChild = true
+      } else {
+        this.currentChild.age = this.ageChild
+      }
+    },
+    addChild() {
+      this.childInc += 1
+      this.children = [...this.children, {
+        id: this.childInc,
+        name: this.currentChild.name,
+        age: this.currentChild.age
+      }]
+      this.nameChild=''
+      this.ageChild=''
+    },
+    removeChild(id) {
+      this.children = this.children.filter(c => c.id !== id)
+    }
+
+  },
+  computed: {
+    checkIsEmptyInputs: function () {
+      return !(this.name !== null && this.age !== null);
+    }
+  }
+
 }
 </script>
 
 <style>
 
 .main-form {
-    margin: 30px 0;
-}
-
-.main-form-title {
-    font-weight: 500;
-    font-size: 16px;
-    margin-bottom: 20px;
+  margin: 30px 0;
 }
 
 
-.main-form-label {
-    display: block;
-    width: 100%;
-    border: 1px solid #F1F1F1;
-    border-radius: 4px;
-    padding: 8px 16px;
-    cursor: pointer;
-    margin-bottom: 10px;
-}
-
-.main-form-label-text {
-    color: rgba(17, 17, 17, 0.48);
-}
-
-input {
-    width: 100%;
-    outline: none;
-    border: none;
+label span {
+  display: block;
 }
 
 </style>
